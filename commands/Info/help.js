@@ -186,7 +186,7 @@ module.exports = {
             embeds: [
               new EmbedBuilder()
                 .setColor(ee.color)
-                .setDescription(`${emote.x} | You ran out of time! Try again!`),
+                .setDescription(`${client.allEmojis.x} | You ran out of time! Try again!`),
             ],
           });
         });
