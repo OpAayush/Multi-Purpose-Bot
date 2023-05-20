@@ -2,8 +2,7 @@ const mongoose = require('mongoose');
 module.exports = (config) => {
     mongoose.connect(config.MongoURL, {
         useNewUrlParser: true,
-        useUnifiedTopology: true,
-        useFindAndModify: false
+        useUnifiedTopology: true
     }).then(() => {
         console.log("Connected to the database!".green);
     }

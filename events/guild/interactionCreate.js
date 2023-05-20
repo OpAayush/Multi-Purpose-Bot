@@ -86,7 +86,7 @@ module.exports = (client, interaction) => {
       });
     }
     //execute the Command
-    command.run(client, interaction)
+    command.slashRun(client, interaction)
   }
 }
 

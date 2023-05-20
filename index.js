@@ -29,11 +29,11 @@ const client = new Discord.Client({
   }
 });
 //DataBase stuff
-if (config.MONGOtype === "MONGOOSE") {
+if (config.MongoURL) {
 const connect = require("./database/connect.js");
 connect(config);
   } else {
-    console.log('Please set the MONGOtype to MONGOOSE in the config.js file!'.red)
+    console.log("No MongoURL provided, add it in the config.js file.".red)
     process.exit(1)
   }
 //Define some Global Collections
@@ -41,7 +41,7 @@ client.commands = new Discord.Collection();
 client.cooldowns = new Discord.Collection();
 client.slashCommands = new Discord.Collection();
 client.aliases = new Discord.Collection();
-client.categories = require("fs").readdirSync(`./slashCommands`);
+client.categories = require("fs").readdirSync(`./commands`);
 client.allEmojis = require("./botconfig/emojis.js");
 client.maps = new Map();
 
@@ -49,7 +49,7 @@ client.setMaxListeners(100); require('events').defaultMaxListeners = 100;
 
 
 //Require the Handlers Add the antiCrash file too, if its enabled
-["events", "slashCommands", settings.antiCrash ? "antiCrash" : null]
+["events", "slashCommands", "messageCommands", settings.antiCrash ? "antiCrash" : null]
   .filter(Boolean)
   .forEach(h => {
     require(`./handlers/${h}`)(client);
