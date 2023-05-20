@@ -5,17 +5,17 @@ const dirSetup = config.dirSetup;
 module.exports = (client) => {
     try {
 		let allCommands = [];
-        readdirSync("./slashCommands/").forEach((dir) => {
-			if(lstatSync(`./slashCommands/${dir}`).isDirectory()) {
+        readdirSync("./commands/").forEach((dir) => {
+			if(lstatSync(`./commands/${dir}`).isDirectory()) {
 				const cmdSetup = dirSetup.find(d=>d.Folder == dir);
 				//If its a valid cmdsetup
 				if(cmdSetup && cmdSetup.Folder) {
 					//Set the SubCommand as a Slash Builder
 					const subCommand = new SlashCommandBuilder().setName(String(cmdSetup.CmdName).replace(/\s+/g, '_').toLowerCase()).setDescription(String(cmdSetup.CmdDescription));
 					//Now for each file in that subcommand, add a command!
-					const slashCommands = readdirSync(`./slashCommands/${dir}/`).filter((file) => file.endsWith(".js"));
+					const slashCommands = readdirSync(`./commands/${dir}/`).filter((file) => file.endsWith(".js"));
 					for (let file of slashCommands) {
-						let pull = require(`../slashCommands/${dir}/${file}`);
+						let pull = require(`../commands/${dir}/${file}`);
 						if (pull.name && pull.description) {
 							subCommand
 							.addSubcommand((subcommand) => {
@@ -77,7 +77,7 @@ module.exports = (client) => {
 					return console.log(`The Subcommand-Folder ${dir} is not in the dirSetup Configuration!`);
 				}
 			} else {
-				let pull = require(`../slashCommands/${dir}`);
+				let pull = require(`../commands/${dir}`);
 				if (pull.name && pull.description) {
 					let Command = new SlashCommandBuilder().setName(String(pull.name).toLowerCase()).setDescription(pull.description);
 						if(pull.options && pull.options.length > 0){

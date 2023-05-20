@@ -5,7 +5,7 @@ const config = require("../../botconfig/config.js");
 const ee = require("../../botconfig/embed.js");
 const {
   duration
-} = require("../../handlers/functions")
+} = require("../../handlers/functions.js")
 const settings = require("../../botconfig/settings.js");
 module.exports = {
   name: "uptime", //the command name for execution & for helpcmd [OPTIONAL]
