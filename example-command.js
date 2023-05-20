@@ -60,7 +60,7 @@ module.exports = {
 			console.log(String(e.stack).bgRed)
 		}
 	},
-    messageRun: async (client, message, args, prefix) => {
+    messageRun: async (client, message, args, plusArgs, cmdUser, text, prefix) => {
         try {
 
         } catch (e) {

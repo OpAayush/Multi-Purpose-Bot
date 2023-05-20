@@ -92,6 +92,14 @@ module.exports = {
 		} catch (e) {
 			console.log(String(e.stack).bgRed)
 		}
+	},
+	messageRun: async (client, message, args, plusArgs, cmdUser, text, prefix) => {
+		const msg = await message.reply({
+			content: `${client.allEmojis.loading} Getting the Bot Ping...`,
+		})
+		await msg.edit({
+			content: `${client.allEmojis.ping} Bot Ping: \`${Math.floor((Date.now() - msg.createdTimestamp) - 2 * Math.floor(client.ws.ping))} ms\`\n\n${client.allEmojis.ping} Api Ping: \`${Math.floor(client.ws.ping)} ms\``,
+		})
 	}
 }
 
