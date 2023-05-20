@@ -44,6 +44,7 @@ client.aliases = new Discord.Collection();
 client.categories = require("fs").readdirSync(`./commands`);
 client.allEmojis = require("./botconfig/emojis.js");
 client.maps = new Map();
+client.config = config;
 
 client.setMaxListeners(100); require('events').defaultMaxListeners = 100;
 

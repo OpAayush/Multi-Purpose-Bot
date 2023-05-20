@@ -6,7 +6,8 @@ const ee = require("../../botconfig/embed.js");
 const settings = require("../../botconfig/settings.js");
 module.exports = {
 	name: "ping", //the command name for the Slash Command
-  category: "Info",
+  	category: "Info",
+	aliases: [], //the command aliases [OPTIONAL]
 	description: "Gives you information on how fast the Bot is", //the command description for Slash Command Overview
 	cooldown: 1,
 	memberpermissions: [], //Only allow members with specific Permissions to execute a Commmand [OPTIONAL]
@@ -32,6 +33,13 @@ module.exports = {
 		// 	}
 		// }, //here the second array input MUST BE A STRING // TO USE IN THE CODE: interacton.getString("what_ping")
 	],
+	usage: "",  //the Command usage [OPTIONAL]
+  	minargs: 0, // minimum args for the message, 0 == none [OPTIONAL]
+  	maxargs: 0, // maximum args for the message, 0 == none [OPTIONAL]
+ 	minplusargs: 1, // minimum args for the message, splitted with "++" , 0 == none [OPTIONAL]
+  	maxplusargs: 0, // maximum args for the message, splitted with "++" , 0 == none [OPTIONAL]
+  	argsmissing_message: "", //Message if the user has not enough args / not enough plus args, which will be sent, leave emtpy / dont add, if you wanna use command.usage or the default message! [OPTIONAL]
+  	argstoomany_message: "", //Message if the user has too many / not enough args / too many plus args, which will be sent, leave emtpy / dont add, if you wanna use command.usage or the default message! [OPTIONAL]
 	slashRun: async (client, interaction) => {
 		try {
 			//things u can directly access in an interaction!

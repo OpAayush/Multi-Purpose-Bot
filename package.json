@@ -23,6 +23,7 @@
     "discord.js": "^14.9.0",
     "dotenv": "^16.0.3",
     "mongoose": "^7.0.4",
-    "quickmongo": "^5.2.0"
+    "quickmongo": "^5.2.0",
+    "string-similarity": "^4.0.4"
   }
 }
