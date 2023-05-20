@@ -96,8 +96,8 @@ module.exports = {
           });
     
         embed.setDescription(`${codeBlock("diff", `- [] = optional argument
-    - <> = required argument
-    - Do NOT type these when using commands!`)}
+- <> = required argument
+- Do NOT type these when using commands!`)}
     > ${cmd.description}`);
     
         return interaction.reply({
