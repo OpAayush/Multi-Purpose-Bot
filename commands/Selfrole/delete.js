@@ -6,7 +6,6 @@ const ee = require("../../botconfig/embed.js");
 const settings = require("../../botconfig/settings.js");
 module.exports = {
 	name: "ping", //the command name for the Slash Command
-	slashName: "ping", //the command name for the Slash Command
   	category: "Info",
 	aliases: [], //the command aliases [OPTIONAL]
 	description: "Gives you information on how fast the Bot is", //the command description for Slash Command Overview

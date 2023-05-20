@@ -12,5 +12,9 @@ module.exports = {
   "dirSetup": [{
     "Folder": "Info", "CmdName": "info",
     "CmdDescription": "Grant specific Information about something!"
-  }]
+  }, 
+{
+    "Folder": "Selfrole", "CmdName": "selfrole",
+    "CmdDescription": "Make selfroles for your Server!"
+}]
 }

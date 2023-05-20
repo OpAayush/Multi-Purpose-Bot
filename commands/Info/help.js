@@ -5,7 +5,8 @@ const settings = require("../../botconfig/settings.js");
 const stringSimilarity = require("string-similarity");
 
 module.exports = {
-  name: "help", //the command name for execution & for helpcmd [OPTIONAL]
+  name: "help", //the command name for execution & for helpcmd 
+  slashName: "help", //the command name for slash command 
   category: "Info",
   aliases: ["h", "commandinfo", "cmds", "cmd", "halp"], //the command aliases [OPTIONAL]
   cooldown: 3, //the command cooldown for execution & for helpcmd [OPTIONAL]

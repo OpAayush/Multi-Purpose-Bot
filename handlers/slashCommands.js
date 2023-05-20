@@ -16,10 +16,10 @@ module.exports = (client) => {
 					const slashCommands = readdirSync(`./commands/${dir}/`).filter((file) => file.endsWith(".js"));
 					for (let file of slashCommands) {
 						let pull = require(`../commands/${dir}/${file}`);
-						if (pull.name && pull.description) {
+						if (pull.slashName && pull.description) {
 							subCommand
 							.addSubcommand((subcommand) => {
-								subcommand.setName(String(pull.name).toLowerCase()).setDescription(pull.description)
+								subcommand.setName(String(pull.slashName).toLowerCase()).setDescription(pull.description)
 								if(pull.options && pull.options.length > 0){
 									for(const option of pull.options){
 										if(option.User && option.User.name && option.User.description){
@@ -58,13 +58,13 @@ module.exports = (client) => {
 												op.setName(String(option.Attachment.name).replace(/\s+/g, '_').toLowerCase()).setDescription(option.Attachment.description).setRequired(option.Attachment.required).setAutocomplete(option.Attachment.autocomplete? true: false)
 											)
                     } else {
-											console.log(`A Option is missing the Name or/and the Description of ${pull.name}`)
+											console.log(`A Option is missing the Name or/and the Description of ${pull.slashName}`)
 										}
 									}
 								}
 								return subcommand;
 							})
-							client.slashCommands.set(String(cmdSetup.CmdName).replace(/\s+/g, '_').toLowerCase() + pull.name, pull)
+							client.slashCommands.set(String(cmdSetup.CmdName).replace(/\s+/g, '_').toLowerCase() + pull.slashName, pull)
 						} else {
 							console.log(file, `error -> missing a help.name, or help.name is not a string.`.brightRed);
 							continue;
@@ -78,8 +78,8 @@ module.exports = (client) => {
 				}
 			} else {
 				let pull = require(`../commands/${dir}`);
-				if (pull.name && pull.description) {
-					let Command = new SlashCommandBuilder().setName(String(pull.name).toLowerCase()).setDescription(pull.description);
+				if (pull.slashName && pull.description) {
+					let Command = new SlashCommandBuilder().setName(String(pull.slashName).toLowerCase()).setDescription(pull.description);
 						if(pull.options && pull.options.length > 0){
 							for(const option of pull.options){
 								if(option.User && option.User.name && option.User.description){
@@ -113,12 +113,12 @@ module.exports = (client) => {
 										.addChoices(option.IntChoices.choices.map(c=> [String(c[0]).replace(/\s+/g, '_').toLowerCase(),parseInt(c[1])] )),
 									)
 								} else {
-									console.log(`A Option is missing the Name or/and the Description of ${pull.name}`)
+									console.log(`A Option is missing the Name or/and the Description of ${pull.slashName}`)
 								}
 							}
 						}
 						allCommands.push(Command.toJSON());
-						client.slashCommands.set("normal" + pull.name, pull)
+						client.slashCommands.set("normal" + pull.slashName, pull)
 				} 
 				else {
 					console.log(file, `error -> missing a help.name, or help.name is not a string.`.brightRed);
