@@ -36,7 +36,7 @@ module.exports = {
     usage: "", //the Command usage [OPTIONAL]
     minargs: 0, // minimum args for the message, 0 == none [OPTIONAL]
     maxargs: 0, // maximum args for the message, 0 == none [OPTIONAL]
-    minplusargs: 1, // minimum args for the message, splitted with "++" , 0 == none [OPTIONAL]
+    minplusargs: 0, // minimum args for the message, splitted with "++" , 0 == none [OPTIONAL]
     maxplusargs: 0, // maximum args for the message, splitted with "++" , 0 == none [OPTIONAL]
     argsmissing_message: "", //Message if the user has not enough args / not enough plus args, which will be sent, leave emtpy / dont add, if you wanna use command.usage or the default message! [OPTIONAL]
     argstoomany_message: "", //Message if the user has too many / not enough args / too many plus args, which will be sent, leave emtpy / dont add, if you wanna use command.usage or the default message! [OPTIONAL]
@@ -58,18 +58,23 @@ module.exports = {
             } = interaction;
             const { guild } = member;
             const button1 = new ButtonBuilder()
-                .setStyle(ButtonStyle.PRIMARY)
-                .setLabel("<:hehe_boi:1109465424858456074>")
+                .setStyle(ButtonStyle.Primary)
+                .setLabel("\u200b")
+                .setCustomId("test1")
                 const button2 = new ButtonBuilder()
-                .setStyle(ButtonStyle.PRIMARY)
+                .setStyle(ButtonStyle.Danger)
                 .setLabel("TestCommand")
+                .setEmoji("<:hehe_boi:1109465424858456074>")
+                .setCustomId("test2")
                 const button3 = new ButtonBuilder()
-                .setStyle(ButtonStyle.PRIMARY)
-                .setLabel("<:hehe_boi:1109465424858456074> TestCommand")
+                .setStyle(ButtonStyle.Success)
+                .setLabel("TestCommand")
+                .setEmoji("<:hehe_boi:1109465424858456074>")
+                .setCustomId("test3")
                 const row = new ActionRowBuilder()
                 .addComponents(button1,button2,button3)
             const embeds = new EmbedBuilder()
-                .setColor(ee.color)
+                .setColor("Aqua")
                 .setTitle("Test Command For NOVA")
                 .setDescription("This is a test command for NOVA")
                 
@@ -95,19 +100,25 @@ module.exports = {
     ) => {
         try {
             const button1 = new ButtonBuilder()
-                .setStyle(ButtonStyle.PRIMARY)
-                .setLabel("<:hehe_boi:1109465424858456074>")
+                .setStyle(ButtonStyle.Primary)
+                .setLabel("\u200b")
+                .setCustomId("test4")
                 const button2 = new ButtonBuilder()
-                .setStyle(ButtonStyle.PRIMARY)
-                .setLabel("TestCommand")
+                .setStyle(ButtonStyle.Danger)
+                .setLabel("\u200b")
+                .setEmoji("<:hehe_boi:1109465424858456074>")
+                .setCustomId("test5")
                 const button3 = new ButtonBuilder()
-                .setStyle(ButtonStyle.PRIMARY)
-                .setLabel("<:hehe_boi:1109465424858456074> TestCommand")
+                .setStyle(ButtonStyle.Success)
+                .setLabel("TestCommand")
+                .setEmoji("<:hehe_boi:1109465424858456074>")
+                .setCustomId("test6")
                 const row = new ActionRowBuilder()
                 .addComponents(button1,button2,button3)
             const embeds = new EmbedBuilder()
-                .setColor(ee.color)
+                .setColor("Aqua")
                 .setTitle("Test Command For NOVA")
+                
                 .setDescription("This is a test command for NOVA")
 
             message.channel.send({ embeds: [embeds], components: [row] })
