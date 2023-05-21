@@ -7,9 +7,9 @@ const {
 const config = require("../../botconfig/config.js");
 const ee = require("../../botconfig/embed.js");
 const settings = require("../../botconfig/settings.js");
-const afkSchema = require("../../database/schemas/utility/afk.js");
+const AfkEntry = require("../../database/schemas/utility/afk.js");
 module.exports = {
-	name: "afk set", //the command name for the Slash Command
+	name: "afk-set", //the command name for the Slash Command
 	slashName: "afk-set", //the command name for the Slash Command
   	category: "Utility",
 	aliases: ["afk"], //the command aliases [OPTIONAL]
@@ -75,102 +75,111 @@ module.exports = {
 	},
     messageRun: async (client, message, args, plusArgs, cmdUser, text, prefix) => {
         try {
-            const ask_which_afk = new EmbedBuilder()
-                .setColor(ee.color)
-                .setTitle("Choose your afk style from the buttons below.")
-            const ask_msg_send = await message.reply({
-                embeds: [ask_which_afk],
-                components: [
-                    new ActionRowBuilder().addComponents(
-                        new ButtonBuilder()
-                            .setCustomId('global')
-                            .setLabel('AKF in all servers (Mutuals)')
-                            .setStyle(ButtonStyle.Success),
-                        new ButtonBuilder()
-                            .setCustomId('server')
-                            .setLabel('AFK only in this server ')
-                            .setStyle(ButtonStyle.Success),
-                    ),
-                ],
-            })
-            const filter = (interaction) => {
-                return interaction.user.id === message.author.id;
-            }
-            const collector = message.channel.createMessageComponentCollector({
-                filter,
-                time: 15000,
-            });
-            collector.on('collect', async (interaction) => {
-                if (interaction.customId === 'global') {
-                    try {
-                        const afkData = await afkSchema.findOne({ userID: message.author.id });
-                        
-                        if (afkData) {
-                          await ask_msg_send.edit({
-                            content: `You are already afk.`,
-                            components: []
-                          });
-                          collector.stop();
-                        } else {
-                          const reason = args.join(" ") || "No reason provided.";
-                          const newAfkData = new afkSchema({
-                            guilds: [{ guildID: message.guild.id }],
-                            global: true,
-                            userID: message.author.id,
-                            reason: reason,
-                            timestamp: Date.now(),
-                          });
-                      
-                          await newAfkData.save();
-                        }
-                      } catch (err) {
-                        console.log(err);
-                      }
-                      
-                    await ask_msg_send.edit({
-                        content: `Your afk status has been set to global.`,
-                        components: []
-                    });
-                    collector.stop();
-                } else if (interaction.customId === 'server') {
-                    try {
-                        const data = await afkSchema.findOne({ userID: message.author.id });
-                      
-                        if (data) {
-                          await ask_msg_send.edit({
-                            content: `You are already afk.`,
-                            components: []
-                          });
-                          collector.stop();
-                        } else {
-                          const reason = args.join(" ") || "No reason provided.";
-                          const afkData = new afkSchema({
-                            guilds: [{ guildID: message.guild.id }],
-                            global: false,
-                            userID: message.author.id,
-                            reason: reason,
-                            timestamp: Date.now(),
-                          });
-                          
-                          await afkData.save();
-                        }
-                      } catch (err) {
-                        console.log(err);
-                      }
-                      
+          const askWhichAfk = new EmbedBuilder()
+  .setColor(ee.color)
+  .setTitle("Choose your AFK style from the buttons below.");
 
+const askMsgSend = await message.reply({
+  embeds: [askWhichAfk],
+  components: [
+    new ActionRowBuilder().addComponents(
+      new ButtonBuilder()
+        .setCustomId('global')
+        .setLabel('AFK in all servers (Mutuals)')
+        .setStyle(ButtonStyle.Success),
+      new ButtonBuilder()
+        .setCustomId('server')
+        .setLabel('AFK only in this server')
+        .setStyle(ButtonStyle.Success),
+    ),
+  ],
+});
 
-                    await ask_msg_send.edit({
-                        content: `Your afk status has been set to server.`,
-                        components: []
-                    });
-                    collector.stop();
-                }
-            }
-            )
-            collector.on('end', async (collected) => {
-                await ask_msg_send.delete();
-            });
+const filter = (interaction) => {
+  return interaction.user.id === message.author.id;
+};
+
+const collector = message.channel.createMessageComponentCollector({
+  filter,
+  time: 15000,
+});
+
+collector.on('collect', async (interaction) => {
+  if (interaction.customId === 'global') {
+    try {
+      const afkData = await AfkEntry.findOne({ userID: message.author.id });
+
+      if (afkData) {
+        await askMsgSend.edit({
+          content: 'You are already AFK.',
+          embeds: [],
+          components: [],
+        });
+        collector.stop();
+      } else {
+        const reason = args.join(' ') || 'No reason provided.';
+        const newAfkData = new AfkEntry({
+          guilds: [{ guildID: message.guild.id }],
+          isGlobalAfk: true,
+          userID: message.author.id,
+          reason: reason,
+          timestamp: Date.now(),
+        });
+
+        await newAfkData.save();
+      }
+    } catch (err) {
+      console.log(err);
+    }
+
+    await askMsgSend.edit({
+      content: 'Your AFK status has been set to global.',
+      embeds: [],
+      components: [],
+    });
+    collector.stop();
+  } else if (interaction.customId === 'server') {
+    try {
+      const data = await AfkEntry.findOne({ userID: message.author.id });
+
+      if (data) {
+        await askMsgSend.edit({
+          content: 'You are already AFK.',
+          embeds: [],
+          components: [],
+        });
+        collector.stop();
+      } else {
+        const reason = args.join(' ') || 'No reason provided.';
+        const afkData = new AfkEntry({
+          guilds: [{ guildID: message.guild.id }],
+          isGlobalAfk: false,
+          userID: message.author.id,
+          reason: reason,
+          timestamp: Date.now(),
+        });
+
+        await afkData.save();
+      }
+    } catch (err) {
+      console.log(err);
+    }
+
+    await askMsgSend.edit({
+      content: 'Your AFK status has been set to server.',
+      embeds: [],
+      components: [],
+    });
+    collector.stop();
+  }
+});
+
+collector.on('end', async (collected) => {
+  if(collected.size === 0) {
+  await askMsgSend.delete();
+  }
+});
+
         } catch (e) {
             console.log(String(e.stack).bgRed)
         }

@@ -4,8 +4,9 @@ const {
 const config = require("../../botconfig/config.js");
 const ee = require("../../botconfig/embed.js");
 const settings = require("../../botconfig/settings.js");
+const AfkEntry = require("../../database/schemas/utility/afk.js");
 module.exports = {
-	name: "afk list", //the command name for the Slash Command
+	name: "afk-list", //the command name for the Slash Command
 	slashName: "ask-list", //the command name for the Slash Command
   	category: "Utility",
 	aliases: ["afk l"], //the command aliases [OPTIONAL]
@@ -71,7 +72,28 @@ module.exports = {
 	},
     messageRun: async (client, message, args, plusArgs, cmdUser, text, prefix) => {
         try {
-
+			const afkUsers = await AfkEntry.find({
+				$or: [
+				  { guilds: { $elemMatch: { guildID: message.guild.id } } }, // AFK users in the same guild
+				  { isGlobalAfk: true }, // Globally AFK users
+				],
+			  });
+		  
+			  if (afkUsers.length === 0) {
+				message.reply("There are no AFK users in this guild.");
+				return;
+			  }
+		  
+			  const afkList = afkUsers.map((afkUser) => {
+				const isGlobalAfk = afkUser.isGlobalAfk;
+				const guildMatch = afkUser.guilds.find((guild) => guild.guildID === message.guild.id);
+				const afkGuild = guildMatch ? message.guild.name : 'All Guilds';
+				const afkReason = afkUser.reason || 'No reason provided';
+		  
+				return `- User: ${afkUser.userID}\n  AFK Status: ${isGlobalAfk ? 'Global' : 'Server'}\n  Guild: ${afkGuild}\n  Reason: ${afkReason}\n`;
+			  });
+		  
+			  message.reply(`AFK Users:\n${afkList.join('\n')}`);
         } catch (e) {
             console.log(String(e.stack).bgRed)
         }

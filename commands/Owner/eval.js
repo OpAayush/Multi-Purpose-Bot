@@ -89,7 +89,6 @@ module.exports = {
       let evaled;
       evaled = await eval(code);
       //make string out of the evaluation
-      console.log(evaled)
       let string = cleanCode(inspect(evaled));
       //if the token is included return error
       if (string.includes(client.token))

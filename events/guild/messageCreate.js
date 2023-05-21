@@ -3,7 +3,7 @@ const ee = require(`../../botconfig/embed.js`);
 const settings = require(`../../botconfig/settings.js`);
 const { onCoolDown, replacemsg } = require(`../../handlers/functions`);
 const Discord = require(`discord.js`);
-const afkSchema = require(`../../database/schemas/utility/afk.js`);
+const AfkEntry = require(`../../database/schemas/utility/afk.js`);
 module.exports = async (client, message) => {
   try {
     //if the message is not in a guild (aka in dms), return aka ignore the inputs
@@ -19,13 +19,50 @@ module.exports = async (client, message) => {
     if (message.member?.partial) await message.member.fetch().catch(() => {});
     //AFK SYSTEM
     
-    //get the afk data from the database
-    const afkdata = await afkSchema.findOne({
-      userID: message.author.id,
+  // Get the AFK data from the database
+const afkData = await AfkEntry.findOne({ userID: message.author.id });
+
+if (afkData) {
+  if (afkData.isGlobalAfk) {
+    await AfkEntry.deleteOne({ userID: message.author.id });
+
+    const welcomeEmbed = new Discord.EmbedBuilder()
+      .setColor(ee.color)
+      .setFooter({ text: ee.footertext, iconURL: ee.footericon })
+      .setTitle(`**Welcome back, ${message.author.tag}!**`)
+      .setDescription(`You were AFK for \`${formatRelativeTime(afkData.timestamp)}\`. I removed your AFK status.`);
+
+    message.reply({ embeds: [welcomeEmbed] }).then(msg => {
+      setTimeout(() => {
+        msg.delete().catch(e => {
+          console.log(String(e).grey);
+        });
+      }, 5000);
     });
-    if(afkdata) {
-      console.log(afkdata);
-    }
+  } else if (afkData.guilds.some(guild => guild.guildID === message.guild.id)) {
+    await AfkEntry.updateOne(
+      { userID: message.author.id },
+      { $pull: { guilds: { guildID: message.guild.id } } }
+    );
+
+    const welcomeEmbed = new Discord.EmbedBuilder()
+      .setColor(ee.color)
+      .setFooter({ text: ee.footertext, iconURL: ee.footericon })
+      .setTitle(`**Welcome back, ${message.author.tag}!**`)
+      .setDescription(`You were AFK for \`${formatRelativeTime(afkData.timestamp)}\`. I removed your AFK status.`);
+
+    message.reply({ embeds: [welcomeEmbed] }).then(msg => {
+      setTimeout(() => {
+        msg.delete().catch(e => {
+          console.log(String(e).grey);
+        });
+      }, 5000);
+    });
+  }
+}
+
+
+    
     // if the message  author is a bot, return aka ignore the inputs
     if (message.author.bot) return;
     const prefix = config.prefix;
@@ -413,5 +450,26 @@ function escapeRegex(str) {
     return str.replace(/[.*+?^${}()|[\]\\]/g, `\\$&`);
   } catch {
     return str;
+  }
+}
+
+function formatRelativeTime(timestamp) {
+  const currentTime = new Date().getTime();
+  const timeDifference = currentTime - timestamp;
+
+  // Convert time difference to seconds
+  const seconds = Math.floor(timeDifference / 1000);
+
+  if (seconds < 60) {
+    return seconds + " seconds ago";
+  } else if (seconds < 3600) {
+    const minutes = Math.floor(seconds / 60);
+    return minutes + " minutes ago";
+  } else if (seconds < 86400) {
+    const hours = Math.floor(seconds / 3600);
+    return hours + " hours ago";
+  } else {
+    const days = Math.floor(seconds / 86400);
+    return days + " days ago";
   }
 }
