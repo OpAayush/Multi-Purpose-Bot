@@ -5,8 +5,9 @@ const config = require("../../botconfig/config.js");
 const ee = require("../../botconfig/embed.js");
 const settings = require("../../botconfig/settings.js");
 module.exports = {
-	name: "ping", //the command name for the Slash Command
-  	category: "Info",
+	name: "selfrole delete", //the command name for the Slash Command
+  	slashName: "delete", //the command name for the Slash Command
+  	category: "Selfrole",
 	aliases: [], //the command aliases [OPTIONAL]
 	description: "Gives you information on how fast the Bot is", //the command description for Slash Command Overview
 	cooldown: 1,
