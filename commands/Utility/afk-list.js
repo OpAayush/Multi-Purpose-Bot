@@ -1,19 +1,16 @@
 const {
-    EmbedBuilder,
-    ActionRowBuilder,
-    ButtonStyle,
-    ButtonBuilder,
-  } = require("discord.js");
+	EmbedBuilder
+} = require("discord.js");
 const config = require("../../botconfig/config.js");
 const ee = require("../../botconfig/embed.js");
 const settings = require("../../botconfig/settings.js");
 module.exports = {
-	name: "ping", //the command name for the Slash Command
-	slashName: "ping", //the command name for the Slash Command
-  	category: "Info",
-	aliases: [], //the command aliases [OPTIONAL]
-	description: "Gives you information on how fast the Bot is", //the command description for Slash Command Overview
-	cooldown: 1,
+	name: "afk list", //the command name for the Slash Command
+	slashName: "ask list", //the command name for the Slash Command
+  	category: "Utility",
+	aliases: ["afk l"], //the command aliases [OPTIONAL]
+	description: "See all AFK people in the server",
+	cooldown: 10,
 	memberpermissions: [], //Only allow members with specific Permissions to execute a Commmand [OPTIONAL]
 	requiredroles: [], //Only allow specific Users with a Role to execute a Command [OPTIONAL]
 	alloweduserids: [], //Only allow specific Users to execute a Command [OPTIONAL]
@@ -40,7 +37,7 @@ module.exports = {
 	usage: "",  //the Command usage [OPTIONAL]
   	minargs: 0, // minimum args for the message, 0 == none [OPTIONAL]
   	maxargs: 0, // maximum args for the message, 0 == none [OPTIONAL]
- 	minplusargs: 1, // minimum args for the message, splitted with "++" , 0 == none [OPTIONAL]
+ 	minplusargs: 0, // minimum args for the message, splitted with "++" , 0 == none [OPTIONAL]
   	maxplusargs: 0, // maximum args for the message, splitted with "++" , 0 == none [OPTIONAL]
   	argsmissing_message: "", //Message if the user has not enough args / not enough plus args, which will be sent, leave emtpy / dont add, if you wanna use command.usage or the default message! [OPTIONAL]
   	argstoomany_message: "", //Message if the user has too many / not enough args / too many plus args, which will be sent, leave emtpy / dont add, if you wanna use command.usage or the default message! [OPTIONAL]
