@@ -1,4 +1,4 @@
-const { EmbedBuilder } = require("discord.js");
+const { EmbedBuilder, ActionRowBuilder, ButtonStyle } = require("discord.js");
 const config = require("../../botconfig/config.js");
 const ee = require("../../botconfig/embed.js");
 const settings = require("../../botconfig/settings.js");
@@ -91,13 +91,13 @@ module.exports = {
           ],
           allowedMentions: { repliedUser: false },
         });
-        const filter = (msg) => msg.author.id === message.author.id;
-        const channelCollector = await message.channel.createMessageCollector({
-          filter,
+        const filterChannel = (msg) => msg.author.id === message.author.id;
+        const channelCollector = message.channel.createMessageCollector({
+          filterChannel,
           max: 1,
           time: 15_000,
         });
-        channelCollector.on("collect", (msg) => {
+        channelCollector.on("collect", async (msg) => {
           channel =
             msg.mentions.channels.first() ||
             msg.guild.channels.cache.get(msg.content);
@@ -112,6 +112,47 @@ module.exports = {
               allowedMentions: { repliedUser: false },
             });
           }
+          const btn_embed = new EmbedBuilder()
+            .setTitle("Selfrole Creation")
+            .setColor(ee.color)
+            .setDescription("Should buttons display label only, emoji only or both? This action is irreversible!")
+           // .setImage("");
+
+            msg.reply({
+              embeds: [btn_embed],
+              allowedMentions: { repliedUser: false },
+              components: [
+                new ActionRowBuilder().addComponents(
+                  new MessageButton()
+                    .setCustomId("label_only")
+                    .setLabel("Label Only")
+                    .setStyle(ButtonStyle.PRIMARY),
+                  new MessageButton()
+                    .setCustomId("emoji_only")
+                    .setLabel("Emoji Only")
+                    .setStyle(ButtonStyle.PRIMARY),
+                  new MessageButton()
+                    .setCustomId("both")
+                    .setLabel("Label & Emoji")
+                    .setStyle(ButtonStyle.PRIMARY)
+                ),
+              ],
+            })
+            let btn_style = undefined;
+            const filterButton = (interaction) => interaction.user.id === msg.author.id;
+          const channelButton = msg.channel.createMessageComponentCollector({ filter, time: 15_000 });
+          channelButton.on("collect", async (interaction) => {
+            if (interaction.customId === "label_only") {
+              btn_style = "label_only";
+            } else if (interaction.customId === "emoji_only") {
+              btn_style = "emoji_only";
+            } else if (interaction.customId === "both") {
+              btn_style = "both";
+            }
+          });
+          channelButton.on("end", (collected) => {
+
+          })
         });
         channelCollector.on("end", (collected) => {
           if (!channel) {
@@ -128,9 +169,7 @@ module.exports = {
             });
           }
         });
-        message.reply({
-          content: String(channel),
-        });
+
       }
     } catch (e) {
       console.log(String(e.stack).bgRed);

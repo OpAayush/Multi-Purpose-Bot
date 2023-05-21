@@ -1,5 +1,5 @@
 module.exports = {
-  "botName": "NEXUS", //Bot Name
+  "botName": "Nova", //Bot Name
   "invite_url": "https://discord.com/api/oauth2/authorize?client_id=892554379972696576&permissions=8&scope=bot%20applications.commands", //Bot Invite Link
   "support_server": {
     "invite": "https://discord.gg/2x2k69YJ", //Support Server Invite Link
