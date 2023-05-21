@@ -18,6 +18,7 @@ module.exports = async (client, message) => {
     if (message.channel?.partial) await message.channel.fetch().catch(() => {});
     if (message.member?.partial) await message.member.fetch().catch(() => {});
     //AFK SYSTEM
+    
     //get the afk data from the database
     const afkdata = await afkSchema.findOne({
       userID: message.author.id,

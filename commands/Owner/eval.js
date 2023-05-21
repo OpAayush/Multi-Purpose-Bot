@@ -1,19 +1,26 @@
 const {
-	EmbedBuilder
-} = require("discord.js");
+    EmbedBuilder,
+    ActionRowBuilder,
+    ButtonStyle,
+    ButtonBuilder,
+  } = require("discord.js");
+const { cleanCode, splitMessageRegex } = require("visa2discord")
 const config = require("../../botconfig/config.js");
 const ee = require("../../botconfig/embed.js");
 const settings = require("../../botconfig/settings.js");
+const {
+    inspect
+  } = require(`util`);
 module.exports = {
-	name: "afk list", //the command name for the Slash Command
-	slashName: "ask-list", //the command name for the Slash Command
-  	category: "Utility",
-	aliases: ["afk l"], //the command aliases [OPTIONAL]
-	description: "See all AFK people in the server",
-	cooldown: 10,
+	name: "eval", //the command name for the Slash Command
+	slashName: "eval", //the command name for the Slash Command
+  	category: "owner",
+	aliases: ['e'], //the command aliases [OPTIONAL]
+	description: "Run some code", //the command description for Slash Command Overview
+	cooldown: 1,
 	memberpermissions: [], //Only allow members with specific Permissions to execute a Commmand [OPTIONAL]
 	requiredroles: [], //Only allow specific Users with a Role to execute a Command [OPTIONAL]
-	alloweduserids: [], //Only allow specific Users to execute a Command [OPTIONAL]
+	alloweduserids: settings.ownerIDS, //Only allow specific Users to execute a Command [OPTIONAL]
 	options: [ //OPTIONAL OPTIONS, make the array empty / dont add this option if you don't need options!	
 		//INFORMATIONS! You can add Options, but mind that the NAME MUST BE LOWERCASED! AND NO SPACES!!!, for the CHOCIES you need to add a array of arrays; [ ["",""] , ["",""] ] 
 		//{"Integer": { name: "ping_amount", description: "How many times do you want to ping?", required: true }}, //to use in the code: interacton.getInteger("ping_amount")
@@ -37,7 +44,7 @@ module.exports = {
 	usage: "",  //the Command usage [OPTIONAL]
   	minargs: 0, // minimum args for the message, 0 == none [OPTIONAL]
   	maxargs: 0, // maximum args for the message, 0 == none [OPTIONAL]
- 	minplusargs: 0, // minimum args for the message, splitted with "++" , 0 == none [OPTIONAL]
+ 	minplusargs: 1, // minimum args for the message, splitted with "++" , 0 == none [OPTIONAL]
   	maxplusargs: 0, // maximum args for the message, splitted with "++" , 0 == none [OPTIONAL]
   	argsmissing_message: "", //Message if the user has not enough args / not enough plus args, which will be sent, leave emtpy / dont add, if you wanna use command.usage or the default message! [OPTIONAL]
   	argstoomany_message: "", //Message if the user has too many / not enough args / too many plus args, which will be sent, leave emtpy / dont add, if you wanna use command.usage or the default message! [OPTIONAL]
@@ -71,7 +78,44 @@ module.exports = {
 	},
     messageRun: async (client, message, args, plusArgs, cmdUser, text, prefix) => {
         try {
-
+            if (!args[0])
+            return message.reply({
+              content: `<:no:946581450600370298> You must provide a code to evaluate.`,
+            });
+        const code = args.join(" ");
+        if (args.includes(`token`))
+        return message.reply({ content: `No token grabbing for you!` });
+      //get the evaled content
+      let evaled;
+      evaled = await eval(code);
+      //make string out of the evaluation
+      console.log(evaled)
+      let string = cleanCode(inspect(evaled));
+      //if the token is included return error
+      if (string.includes(client.token))
+        return message.reply({ content: `No token grabbing for you!` });
+      //define queueembed
+      let evalEmbed = new EmbedBuilder()
+        .setTitle(`${client.user.username} | Evaluation`)
+        .setColor("ffc0cb");
+           
+      //split the description
+      const splitDescription = splitMessageRegex(string, {
+        maxLength: 2000,
+        char: `\n`,
+        prepend: ``,
+        append: ``,
+      });
+  
+      //For every description send a new embed
+      splitDescription.forEach(async (m) => {
+   
+        //(over)write embed description
+        evalEmbed.setDescription(`\`\`\`` + m + `\`\`\``);
+        //send embed
+        
+        message.channel.send({embeds: [evalEmbed]});
+        });
         } catch (e) {
             console.log(String(e.stack).bgRed)
         }

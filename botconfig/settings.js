@@ -1,5 +1,5 @@
 module.exports = {
-    "ownerIDS": ["502406420453654529"],
+    "ownerIDS": ["1076942240791928875"],
     "default_cooldown_in_sec" : 1.5,
     "antiCrash": true,
     "ping_message": true,
